@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENARMaps: Tratamiento EVC Isquémico (Guías CENETEC)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee2e6;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .logo-img {
+            height: 120px; 
+            width: auto;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        .enarmaps-title {
+            font-size: 2em; 
+            font-weight: bold;
+            margin: 0;
+        }
+        .enar-style {
+            color: #FFA500; 
+        }
+        .m-style {
+            color: #FFA500; 
+            text-decoration: underline;
+            text-decoration-color: #FFA500; 
+        }
+        .aps-style {
+            color: #0056b3; 
+            text-decoration: underline;
+            text-decoration-color: #0056b3; 
+        }
+        .subtitle {
+            font-size: 1.2em;
+            color: #17a2b8;
+            margin-top: 5px;
+            text-align: center;
+        }
+        h1 { 
+            color: #0056b3;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        #mindmap-container {
+            width: 95%;
+            max-width: 1200px;
+            height: 75vh;
+            min-height: 550px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+        svg.markmap {
+            width: 100%;
+            height: 100%;
+        }
+        .credit {
+            font-size: 0.8em;
+            color: #777;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.15.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.15.4"></script>
+
+</head>
+<body>
+    <div class="header-container">
+        <img src="https://i.imgur.com/UYcNKHK.png" alt="Logo ENARMaps" class="logo-img">
+        <div>
+            <p class="enarmaps-title">
+                <span class="enar-style">ENAR</span><span class="m-style">M</span><span class="aps-style">aps</span>
+            </p>
+            <p class="subtitle">Mapas Mentales para el Aprendizaje Médico</p>
+        </div>
+    </div>
+
+    <h1>Tratamiento del EVC Isquémico (Guías CENETEC)</h1>
+    <div id="mindmap-container">
+        <svg id="markmap-svg" class="markmap"></svg>
+    </div>
+    <div class="credit">Mapa generado con Markmap. Información basada en Guías de Práctica Clínica CENETEC/IMSS (Consulte siempre las guías oficiales más recientes y completas).</div>
+
+<script>
+// Contenido del mapa mental en formato Markdown
+const markdownContent = `
+# EVC Isquémico (Guías CENETEC)
+
+## Fase Aguda (Manejo Inicial y Reperfusión)
+- **Evaluación y Medidas Generales**
+  - Protocolo organizado para evaluación en urgencias (objetivo: evaluación e inicio de trombólisis <60 min de llegada).
+  - Soporte vital si es necesario.
+  - Vía aérea y asistencia ventilatoria si nivel de conciencia disminuido o disfunción bulbar.
+  - Oxígeno suplementario si SatO2 <94% (GPC IMSS-102-22 refiere <92%).
+  - Monitoreo: PA, FC, FR, SatO2, Temperatura, Glucemia.
+  - Identificar y tratar fuentes de hipertermia (Temp ≥38°C con antipiréticos).
+- **Terapia de Reperfusión**
+  - **Alteplasa (rt-PA) Intravenosa**
+    - Indicaciones (GPC S-102-22, IMSS-102-08/22):
+      - Sospecha de EVC isquémico agudo.
+      - Inicio de síntomas <4.5 horas (idealmente <3 horas).
+      - Edad ≥18 años.
+      - Cumplir criterios de inclusión y exclusión.
+    - Criterios de Exclusión Principales (Resumen de GPC S-102-22, IMSS-102-08):
+      - Evidencia de hemorragia en TC.
+      - Infarto multilobular en TC (>1/3 hemisferio).
+      - Antecedente de HIC.
+      - EVC o TEC grave en los últimos 3 meses.
+      - Cirugía mayor o trauma grave en últimos 14 días.
+      - Hemorragia GI o GU en últimas 3 semanas.
+      - Punción arterial no compresible en últimos 7 días.
+      - PA sistólica >185 mmHg o diastólica >110 mmHg persistente.
+      - Glucosa <50 mg/dL.
+      - Plaquetas <100,000/mm³.
+      - Uso de heparina en 48h con TTPa elevado.
+      - Uso actual de ACO con INR >1.7 o TP >15 seg.
+      - Uso de inhibidores directos de trombina o Factor Xa con pruebas de lab. alteradas.
+    - Dosis (GPC S-102-22, IMSS-102-08):
+      - 0.9 mg/kg IV (dosis máxima 90 mg).
+      - 10% en bolo en 1 minuto.
+      - 90% restante en infusión durante 60 minutos.
+    - Manejo de PA para Trombólisis:
+      - Si PA >185/110 mmHg, reducirla cuidadosamente antes de rt-PA.
+      - Medicamentos sugeridos: Labetalol 10-20 mg IV, Nicardipino infusión.
+      - Mantener PA <180/105 mmHg durante y 24h post-rtPA.
+    - Manejo Post-Alteplasa:
+      - Monitoreo neurológico y de PA estricto (cada 15 min x 2h, c/30 min x 6h, c/60 min x 16h).
+      - No antiagregantes ni anticoagulantes por 24 horas.
+      - TC/RM de control a las 24h antes de iniciar antiagregantes/anticoagulantes.
+  - **Tenecteplasa (TNK)**
+    - GPC S-102-22 menciona su uso en "OVP" (Oclusión de Vaso Proximal) a 0.25 mg/kg. (Nota: verificar contexto y disponibilidad local, alteplasa es el estándar más citado).
+  - **Trombectomía Mecánica (TM)**
+    - Indicaciones (GPC IETSI Perú, referenciando guías internacionales, CENETEC puede ser menos explícito en GPCs más antiguas):
+      - Oclusión de gran vaso proximal (ACI, ACM M1).
+      - Ventana <6 horas desde inicio de síntomas.
+      - Pacientes seleccionados 6-24 horas (con criterios de imagen de perfusión si disponibles).
+      - Puede ser precedida por rt-PA IV.
+- **Manejo Inicial de Antiplaquetarios (si no se administra rt-PA o después de ventana)**
+  - **Aspirina (AAS)** (GPC IMSS-114-08, S-102-22)
+    - Dosis inicial: 160-325 mg (GPC S-102-22 menciona 325mg) VO/VR.
+    - Iniciar dentro de las 24-48 horas del EVC agudo.
+    - Si se administró rt-PA: Iniciar AAS 24 horas después, tras TC de control sin hemorragia.
+
+## Prevención Secundaria (Basado en GPC IMSS-114-08 y principios generales)
+- **Terapia Antiplaquetaria (EVC no cardioembólico)**
+  - **Monoterapia:**
+    - **Aspirina (AAS):** Dosis de mantenimiento 75-100 mg/día (GPC IMSS-114-08 menciona dosis bajas).
+    - **Clopidogrel:** 75 mg/día (alternativa si intolerancia/alergia a AAS).
+  - **Terapia Antiplaquetaria Dual (DAPT):**
+    - Las guías CENETEC/IMSS revisadas no son tan explícitas en DAPT como las AHA. Se recomienda seguir recomendaciones de neurólogo y guías actualizadas. Generalmente para EVC isquémico menor o AIT de alto riesgo por corto periodo.
+- **Terapia Anticoagulante (EVC Cardioembólico, ej. Fibrilación Auricular)**
+  - **Warfarina:** (GPC IMSS-114-08 la menciona como elección en prevención secundaria de EVC isquémico, si se contraindica, AAS. Esta guía es de 2008, ACODs son más recientes).
+    - Dosis ajustada para INR objetivo 2.0-3.0.
+  - **Anticoagulantes Orales Directos (ACODs):**
+    - Las GPC más recientes de CENETEC/IMSS pueden no detallarlos extensamente, pero son estándar actual en guías internacionales. Su uso debe ser individualizado.
+- **Manejo de Lípidos (Estatinas)**
+  - (GPC IMSS-114-08, S-102-22)
+  - Se recomienda tratamiento con estatinas en pacientes con EVC isquémico de origen aterotrombótico.
+  - Si el paciente ya tomaba estatinas, continuar durante el periodo agudo.
+  - Objetivo: Reducción de c-LDL (guías internacionales sugieren <70 mg/dL o reducción ≥50% con estatinas de alta intensidad).
+  - Estatinas de alta intensidad (ej. Atorvastatina 40-80 mg, Rosuvastatina 20-40 mg) son preferidas.
+- **Control de la Presión Arterial**
+  - **Fase Aguda (si no candidato a rt-PA):** (GPC S-102-22, IMSS-102-08)
+    - Iniciar tratamiento si PA >220/120 mmHg.
+    - Reducción cautelosa: disminuir 15% de la PA basal en las primeras 24 horas.
+  - **Prevención Secundaria (Crónico):** (GPC IMSS-114-08)
+    - Objetivo: <140/90 mmHg. En pacientes con diabetes o enfermedad renal, puede ser <130/80 mmHg.
+    - Fármacos: IECAs, ARA II, diuréticos tiazídicos, calcioantagonistas. Individualizar.
+- **Control Glucémico** (GPC S-102-22, IMSS-102-08, IMSS-114-08)
+  - Objetivo en fase aguda: Mantener glucosa entre 140-180 mg/dL.
+  - Tratar hiperglucemia y vigilar hipoglucemia.
+  - Manejo a largo plazo de diabetes según guías específicas.
+
+## Manejo de Complicaciones (Breve)
+- **Edema Cerebral:**
+  - Medidas generales (elevación cabecera 30º, osmoterapia - Manitol).
+  - Craniectomía descompresiva en casos seleccionados.
+- **Crisis Convulsivas:**
+  - Tratar si ocurren. No profilaxis de rutina.
+
+## Tratamiento No Farmacológico (General)
+- **Rehabilitación Multidisciplinaria Temprana:**
+  - Fisioterapia, terapia ocupacional, terapia de lenguaje.
+- **Modificación del Estilo de Vida:**
+  - Dieta saludable (baja en sodio, rica en frutas/vegetales).
+  - Ejercicio regular.
+  - Cese del tabaquismo.
+  - Moderación consumo de alcohol.
+  - Control de peso.
+`;
+
+// Opciones para Markmap
+const options = {
+  autoFit: true,
+  colorFreezeLevel: 2,
+  duration: 500,
+  initialExpandLevel: 1, 
+  maxWidth: 300,
+};
+
+// Función para transformar y renderizar el mapa
+function renderMarkmap() {
+    if (window.markmap && window.markmap.Transformer && window.markmap.Markmap) {
+        const { Transformer, Markmap, loadCSS, loadJS } = window.markmap;
+        const transformer = new Transformer();
+        const transformedData = transformer.transform(markdownContent);
+        const root = transformedData.root;
+        const features = transformedData.features;
+
+        if (features && features.styles) loadCSS(features.styles);
+        if (features && features.scripts) loadJS(features.scripts, { getMarkmap: () => Markmap });
+        
+        Markmap.create('#markmap-svg', options, root);
+    } else {
+        console.error("Markmap libraries not loaded correctly.");
+        const container = document.getElementById('mindmap-container');
+        if (container) {
+            container.innerHTML = "<p style='text-align:center; padding-top: 20px;'>Error: No se pudieron cargar las librerías del mapa mental. Verifique la consola para más detalles.</p>";
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', renderMarkmap);
+
+</script>
+</body>
+</html>
+```
+
+**Notas Importantes sobre el Contenido Basado en CENETEC:**
+
+* **Especificidad de las Guías:** Las guías del CENETEC/IMSS pueden ser, en algunos puntos (especialmente en fármacos más nuevos como los ACODs o detalles muy específicos de DAPT), menos detalladas o prescriptivas que las guías internacionales como las de la AHA. He intentado reflejar lo que se menciona explícitamente.
+* **Actualización de Guías:** Las guías se actualizan periódicamente. La información aquí presentada se basa en las versiones que pude consultar (principalmente GPC S-102-22 para fase aguda e IMSS-114-08 para prevención secundaria, que es más antigua). Siempre es crucial referirse a las versiones más recientes publicadas por CENETEC.
+* **Tenecteplasa:** La GPC S-102-22 menciona Tenecteplasa para "OVP" (Oclusión de Vaso Proximal). Este es un punto interesante, ya que Alteplasa sigue siendo el estándar más ampliamente citado en muchas guías para la trombólisis IV general. La aplicación de Tenecteplasa puede tener contextos específicos o estar en evolución.
+* **Trombectomía Mecánica:** Las guías mexicanas más antiguas podrían no detallar tanto la trombectomía como las guías internacionales más recientes. He incluido un resumen general basado en la práctica estándar actual, pero los protocolos locales y la disponibilidad son clave.
+
+Espero que este nuevo mapa sea de gran utilidad para ENARMaps y para el estudio de las guías nacional
